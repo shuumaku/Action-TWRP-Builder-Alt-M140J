@@ -6,7 +6,7 @@ on:
       MANIFEST_URL:
         description: "MANIFEST_URL (if want to use SSH keys, use git@github.com:XXXXX)"
         required: true
-        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_omni"
+        default: "https://github.com/minimal-manifest-twrp/platform_manifest_twrp_aosp"
       MANIFEST_BRANCH:
         description: "MANIFEST_BRANCH"
         required: true
@@ -36,11 +36,11 @@ on:
       MAKEFILE_NAME:
         description: "MAKEFILE_NAME"
         required: true
-        default: "omni_thor2"
+        default: "twrp_thor2"
       BUILD_TARGET:
-        description: "BUILD_TARGET"
+        description: "BUILD_TARGET (this device has no dedicated recovery partition; recovery lives in vendor_boot)"
         required: true
-        default: "recovery"
+        default: "vendorboot"
 
 jobs:
   build:
@@ -137,7 +137,7 @@ jobs:
         uses: haya14busa/action-cond@v1
         id: buildtree
         with:
-          cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'twrp-11' || github.event.inputs.MANIFEST_BRANCH == 'twrp-12.1' }}
+          cond: ${{ github.event.inputs.MANIFEST_BRANCH == 'twrp-11' || github.event.inputs.MANIFEST_BRANCH == 'twrp-12.1' || github.event.inputs.MANIFEST_BRANCH == 'twrp-14' || github.event.inputs.MANIFEST_BRANCH == 'twrp-14.1' }}
           if_true: twrp
           if_false: omni
 
