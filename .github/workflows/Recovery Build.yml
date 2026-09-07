@@ -37,6 +37,10 @@ on:
         description: "MAKEFILE_NAME"
         required: true
         default: "twrp_thor2"
+      RELEASE_CONFIG:
+        description: "RELEASE_CONFIG (Android 14+ lunch requires <product>-<release>-<variant>; ap2a matches this manifest's pinned build/release revision)"
+        required: true
+        default: "ap2a"
       BUILD_TARGET:
         description: "BUILD_TARGET (this device has no dedicated recovery partition; recovery lives in vendor_boot)"
         required: true
@@ -59,6 +63,7 @@ jobs:
           echo "Device Path: ${{ github.event.inputs.DEVICE_PATH }}"
           echo "Device Name: ${{ github.event.inputs.DEVICE_NAME }}"
           echo "Makefile Name: ${{ github.event.inputs.MAKEFILE_NAME }}"
+          echo "Release Config: ${{ github.event.inputs.RELEASE_CONFIG }}"
           echo "Build Target: ${{ github.event.inputs.BUILD_TARGET }}.img"
           echo "::endgroup::"
 
@@ -157,7 +162,7 @@ jobs:
         run: |
           source build/envsetup.sh
           export ALLOW_MISSING_DEPENDENCIES=true
-          lunch ${{ github.event.inputs.MAKEFILE_NAME }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
+          lunch ${{ github.event.inputs.MAKEFILE_NAME }}-${{ github.event.inputs.RELEASE_CONFIG }}-eng && make clean && make ${{ github.event.inputs.BUILD_TARGET }}image -j$(nproc --all)
         working-directory: ${{ steps.pwd.outputs.workspace-folder }}
 
       - name: Upload to Release
